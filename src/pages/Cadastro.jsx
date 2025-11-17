@@ -1,70 +1,88 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+// import cadastroImg from "../assets/imagens/cadastro.jpg"; // substitua depois
 
 export default function Cadastro() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white text-slate-700 px-6">
+    <div
+      style={{
+        minHeight: "100vh",
+        padding: "20px",
+        backgroundColor: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      {/* BACK BUTTON */}
+      <button
+        onClick={() => (window.location.href = "/")}
+        style={{
+          alignSelf: "flex-start",
+          fontSize: "22px",
+          background: "none",
+          border: "none",
+          cursor: "pointer",
+          backgroundColor: "black",
+          color: "white",
+          padding: "4px 8px",
+          borderRadius: "8px",
+          marginBottom: "10px",
+        }}
+      >
+        ←
+      </button>
 
-      {/* Título */}
-      <motion.h1
-        initial={{ opacity: 0, y: -10 }}
+      {/* IMAGE
+      <motion.img
+        src={cadastroImg}
+        style={{
+          width: "200px",
+          height: "200px",
+          objectFit: "cover",
+          borderRadius: "20px",
+          marginTop: "10px",
+        }}
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="text-3xl font-bold mb-8"
-        style={{ color: "#4ebfa2" }}
-      >
-        Criar Conta
-      </motion.h1>
+      /> */}
 
-      {/* Formulário */}
-      <motion.form
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="flex flex-col w-full max-w-xs gap-4"
-      >
-        <input
-          type="text"
-          placeholder="Nome completo"
-          className="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#4ebfa2]"
-        />
+      {/* FORM */}
+      <div style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box" }}>
+        <p style={{ fontWeight: "bold", color: "#4ebfa2", fontSize: "20px" }}>
+          Cadastro
+        </p>
 
-        <input
-          type="email"
-          placeholder="E-mail"
-          className="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#4ebfa2]"
-        />
+        <input type="text" placeholder="Nome" style={inputStyle} />
+        <input type="email" placeholder="E-mail" style={inputStyle} />
+        <input type="password" placeholder="Senha" style={inputStyle} />
 
-        <input
-          type="password"
-          placeholder="Senha"
-          className="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#4ebfa2]"
-        />
-
-        <input
-          type="password"
-          placeholder="Confirmar senha"
-          className="border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#4ebfa2]"
-        />
-
-        {/* Botão */}
-        <button
-          type="submit"
-          style={{ backgroundColor: "#4ebfa2" }}
-          className="text-white font-semibold py-3 rounded-xl shadow hover:opacity-90 transition mt-2"
-        >
-          Criar Conta
-        </button>
-      </motion.form>
-
-      {/* Link para login */}
-      <p className="text-sm text-slate-500 mt-6">
-        Já possui conta?{" "}
-        <Link to="/login" className="text-[#4ebfa2] font-semibold">
-          Entrar
-        </Link>
-      </p>
+        <button style={buttonStyle}>Cadastrar</button>
+      </div>
     </div>
   );
 }
+
+const inputStyle = {
+  width: "100%",
+  maxWidth: "100%",
+  padding: "12px",
+  marginTop: "12px",
+  borderRadius: "10px",
+  border: "1px solid #ccc",
+  fontSize: "15px",
+  boxSizing: "border-box",
+};
+
+
+const buttonStyle = {
+  width: "100%",
+  padding: "14px",
+  marginTop: "20px",
+  backgroundColor: "#4ebfa2",
+  color: "white",
+  border: "none",
+  fontWeight: "bold",
+  borderRadius: "10px",
+  cursor: "pointer",
+};

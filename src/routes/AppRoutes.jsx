@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TelaInicial from "../pages/TelaInicial";
 import Login from "../pages/Login";
 import Cadastro from "../pages/Cadastro";
+import Dashboard from "../pages/Dashboard";
+
 
 
 export default function AppRoutes() {
@@ -11,6 +13,8 @@ export default function AppRoutes() {
         <Route path="/" element={<TelaInicial />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+
 
       </Routes>
     </BrowserRouter>
