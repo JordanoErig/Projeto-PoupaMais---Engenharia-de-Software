@@ -1,0 +1,121 @@
+/* Cadastro.css */
+
+.cadastro-container {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh; /* Ajuste para mobile browsers modernos */
+  padding: 24px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Botão Voltar */
+.back-btn {
+  align-self: flex-start;
+  background-color: #4ebfa2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  min-width: 44px; /* Área de toque */
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s;
+}
+
+.back-btn:active {
+  opacity: 0.7;
+}
+
+/* Imagem */
+.cadastro-image {
+  width: 65%; 
+  max-width: 290px; 
+  height: auto;
+  aspect-ratio: 1/1; 
+  object-fit: cover;
+  border-radius: 20px;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Título */
+.cadastro-title {
+  font-weight: bold;
+  color: #4ebfa2;
+  font-size: 1.5rem;
+  margin: 20px 0 20px 0;
+  text-align: center;
+}
+
+/* Área do Formulário */
+.form-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Espaço uniforme entre os inputs */
+}
+
+/* Inputs */
+.input-field {
+  width: 100%;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem; /* Evita zoom no iOS */
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-field:focus {
+  border-color: #4ebfa2;
+}
+
+/* Botão de Ação */
+.submit-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 10px;
+  background-color: #4ebfa2;
+  color: white;
+  border: none;
+  font-weight: bold;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:active {
+  background-color: #3da68d;
+}
+
+/* Responsividade para Desktop */
+@media (min-width: 768px) {
+  .cadastro-container {
+    justify-content: center;
+    max-width: 500px;
+    margin: 0 auto;
+    border: 1px solid #f0f0f0;
+    border-radius: 20px;
+    padding: 40px;
+    min-height: auto;
+    margin-top: 5vh;
+    position: relative;
+  }
+
+  .back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+  }
+}

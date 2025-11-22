@@ -1,0 +1,111 @@
+
+/* Container Principal */
+.container {
+  width: 100%;
+  /* min-height: 100dvh usa a altura dinâmica real da tela do celular 
+     (ignorando a barra de endereço do navegador) */
+  min-height: 100vh; 
+  min-height: 100dvh; 
+  box-sizing: border-box;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distribui topo, meio e fim */
+  align-items: center;
+  background-color: white;
+  text-align: center;
+}
+
+/* Imagem */
+.hero-image {
+  /* A imagem ocupa 60% da largura da tela, mas nunca passa de 250px */
+  width: 75%; 
+  max-width: 280px;
+  height: auto; /* Mantém a proporção original */
+  aspect-ratio: 1/1; /* Garante que seja quadrada */
+  object-fit: cover;
+  border-radius: 20px;
+  margin-top: 2rem; /* Unidade relativa */
+}
+
+/* Área de Texto */
+.text-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  text-align: justify;
+  hyphens: auto;    
+}
+
+.title {
+  font-size: 2rem; /* Escala com a config de fonte do celular */
+  font-weight: bold;
+  color: #4ebfa2;
+  margin: 0;
+}
+
+.description {
+  font-size: 1rem;
+  color: #555;
+  max-width: 300px; /* Evita linhas muito longas em telas largas */
+  margin: 0;
+  text-align: center; /* Em mobile, centralizado costuma ficar melhor que justificado */
+  line-height: 1.5;
+}
+
+/* Área dos Botões */
+.button-group {
+  width: 100%;
+  max-width: 400px; /* No desktop, os botões não ficam gigantes */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 2rem;
+}
+
+/* Botão Base (Estilo compartilhado) */
+.btn {
+  padding: 16px; /* Área de toque maior para o dedo */
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.btn:active {
+  transform: scale(0.98); /* Efeito de clique tátil */
+}
+
+.btn-primary {
+  background-color: #4ebfa2;
+  color: white;
+  border: none;
+}
+
+.btn-outline {
+  background-color: white;
+  color: #4ebfa2;
+  border: 2px solid #4ebfa2;
+}
+
+@media (min-width: 768px) {
+  .card-container {
+    flex-direction: row; /* Muda para linha */
+    flex-wrap: wrap; /* Permite quebrar para a linha de baixo se faltar espaço */
+    justify-content: center;
+  }
+
+  .card {
+    width: 45%; /* No tablet, cabem 2 por linha */
+  }
+}
+
+@media (min-width: 1024px) {
+  .card {
+    width: 30%; /* No desktop, cabem 3 por linha */
+  }
+}

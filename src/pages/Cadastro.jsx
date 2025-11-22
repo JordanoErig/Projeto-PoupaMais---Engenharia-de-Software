@@ -1,88 +1,82 @@
-import React from "react";
-import { motion } from "framer-motion";
-// import cadastroImg from "../assets/imagens/cadastro.jpg"; // substitua depois
+import React, { useState } from "react"; 
+import { motion } from "framer-motion"; 
+import "../styles/Cadastro.css";
+import cadastroImg from "../assets/imagens/cadastroImg.jpeg"; 
 
 export default function Cadastro() {
+
+  // Estados para capturar os dados
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
+  const handleCadastro = (e) => {
+    e.preventDefault();
+
+    // Salva no localStorage
+    const novoUsuario = { nome, email, senha };
+    localStorage.setItem("user", JSON.stringify(novoUsuario));
+
+    alert("Cadastro realizado com sucesso!");
+    window.location.href = "/login";
+  };
+
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        padding: "20px",
-        backgroundColor: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      {/* BACK BUTTON */}
+    <div className="cadastro-container">
+
       <button
         onClick={() => (window.location.href = "/")}
-        style={{
-          alignSelf: "flex-start",
-          fontSize: "22px",
-          background: "none",
-          border: "none",
-          cursor: "pointer",
-          backgroundColor: "black",
-          color: "white",
-          padding: "4px 8px",
-          borderRadius: "8px",
-          marginBottom: "10px",
-        }}
+        className="back-btn"
+        aria-label="Voltar para o início"
       >
         ←
       </button>
 
-      {/* IMAGE
       <motion.img
         src={cadastroImg}
-        style={{
-          width: "200px",
-          height: "200px",
-          objectFit: "cover",
-          borderRadius: "20px",
-          marginTop: "10px",
-        }}
+        alt="Ilustração Cadastro"
+        className="cadastro-image"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-      /> */}
+      /> 
 
-      {/* FORM */}
-      <div style={{ width: "100%", maxWidth: "100%", boxSizing: "border-box" }}>
-        <p style={{ fontWeight: "bold", color: "#4ebfa2", fontSize: "20px" }}>
+      <form className="form-section" onSubmit={handleCadastro}>
+        <h2 className="cadastro-title">
           Cadastro
-        </p>
+        </h2>
 
-        <input type="text" placeholder="Nome" style={inputStyle} />
-        <input type="email" placeholder="E-mail" style={inputStyle} />
-        <input type="password" placeholder="Senha" style={inputStyle} />
+        <input 
+          type="text" 
+          placeholder="Nome" 
+          className="input-field"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+          required 
+        />
+        
+        <input 
+          type="email" 
+          placeholder="E-mail" 
+          className="input-field"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required 
+        />
+        
+        <input 
+          type="password" 
+          placeholder="Senha" 
+          className="input-field"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+          required 
+        />
 
-        <button style={buttonStyle}>Cadastrar</button>
-      </div>
+        <button type="submit" className="submit-btn">
+          Cadastrar
+        </button>
+      </form>
+
     </div>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  maxWidth: "100%",
-  padding: "12px",
-  marginTop: "12px",
-  borderRadius: "10px",
-  border: "1px solid #ccc",
-  fontSize: "15px",
-  boxSizing: "border-box",
-};
-
-
-const buttonStyle = {
-  width: "100%",
-  padding: "14px",
-  marginTop: "20px",
-  backgroundColor: "#4ebfa2",
-  color: "white",
-  border: "none",
-  fontWeight: "bold",
-  borderRadius: "10px",
-  cursor: "pointer",
-};

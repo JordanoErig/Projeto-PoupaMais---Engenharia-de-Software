@@ -1,0 +1,99 @@
+/* CONTAINER GERAL */
+.dashboard-container {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+
+  padding: 24px;
+  box-sizing: border-box;
+
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* TÍTULO */
+.dashboard-title {
+  color: #4ebfa2;
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+/* CARD DE SALDO */
+.saldo-card {
+  width: 100%;
+  max-width: 350px;
+  background-color: #4ebfa2;
+  color: white;
+  border-radius: 14px;
+  padding: 20px;
+
+  margin-top: 30px;
+  text-align: center;
+
+  box-shadow: 0 4px 10px #00000022;
+}
+
+.saldo-label {
+  font-size: 1rem;
+}
+
+.saldo-valor {
+  margin-top: 8px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* BOTÕES */
+.dashboard-buttons {
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  margin-top: 40px;
+}
+
+.btn-primary {
+  background-color: #4ebfa2;
+  color: white;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:active {
+  background-color: #3da68d;
+}
+
+.btn-secondary {
+  background-color: white;
+  border: 2px solid #4ebfa2;
+  color: #4ebfa2;
+  padding: 16px;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-secondary:active {
+  background-color: #e9fffa;
+}
+
+/* DESKTOP */
+@media (min-width: 768px) {
+  .dashboard-container {
+    justify-content: flex-start;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+}

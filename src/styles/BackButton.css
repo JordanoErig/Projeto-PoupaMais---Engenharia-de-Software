@@ -1,0 +1,17 @@
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #4ebfa2; /* Verde escuro */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.back-btn:active {
+  opacity: 0.7;
+}
