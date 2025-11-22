@@ -1,0 +1,126 @@
+/* CONTAINER PRINCIPAL */
+.meta-detalhes-container {
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #f8fff8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* TÍTULO */
+.titulo-meta {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #2e7d32;
+  text-align: center;
+}
+
+/* CÍRCULO DE PROGRESSO */
+.progresso-circulo {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 25px 0;
+}
+
+.progresso-texto {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 26px;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+/* INFORMAÇÕES DA META */
+.meta-info {
+  width: 90%;
+  max-width: 420px;
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 25px;
+}
+
+.meta-info p {
+  font-size: 16px;
+  margin: 8px 0;
+  color: #333;
+}
+
+/* BOTÃO ADICIONAR PROGRESSO */
+.btn-adicionar-progresso {
+  width: 90%;
+  max-width: 420px;
+  background-color: #4caf50;
+  color: white;
+  padding: 14px;
+  text-align: center;
+  border-radius: 10px;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 25px;
+  transition: 0.2s;
+}
+
+.btn-adicionar-progresso:hover {
+  background-color: #43a047;
+  transform: scale(1.02);
+}
+
+/* HISTÓRICO */
+.titulo-historico {
+  width: 90%;
+  max-width: 420px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #1b5e20;
+  margin-bottom: 10px;
+}
+
+.historico-lista {
+  width: 90%;
+  max-width: 420px;
+}
+
+.historico-item {
+  background: white;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border-left: 6px solid #4caf50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+}
+
+.historico-item span {
+  font-size: 16px;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+.historico-item .data {
+  font-size: 14px;
+  color: #555;
+  font-weight: normal;
+}
+
+.sem-historico {
+  color: #666;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+/* ERRO */
+.erro {
+  font-size: 20px;
+  color: red;
+}

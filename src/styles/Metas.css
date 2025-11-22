@@ -1,0 +1,100 @@
+.metas-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.metas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn-add {
+  background-color: #4ebfa2;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.btn-add:active {
+  background-color: #3da68d;
+}
+
+.lista-metas {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.meta-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.meta-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.status.Em\ andamento {
+  background-color: #e9f9f4;
+  color: #4ebfa2;
+}
+
+.status.Concluída {
+  background-color: #d8ffe0;
+  color: #2e8f50;
+}
+
+.status.Vencida {
+  background-color: #ffe0e0;
+  color: #d14545;
+}
+
+.meta-valores {
+  margin: 6px 0;
+  font-weight: bold;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background: #e6e6e6;
+  border-radius: 10px;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4ebfa2;
+}
+
+.progress-text {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.muted {
+  color: #888;
+  margin-top: 20px;
+  text-align: center;
+}

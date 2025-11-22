@@ -185,7 +185,7 @@
 .cat-name { font-weight: 600; font-size: 14px; }
 
 /* gastos list */
-.recent-section { width: 100%; max-width: 520px; margin-top: 22px; }
+.recent-section { width: 100%; max-width: 520px; margin-top: 22px; padding-inline: 16px; }
 .gastos-list { list-style: none; padding: 0; margin: 8px 0; display:flex; flex-direction:column; gap:10px; }
 .gasto-item {
   display: flex;

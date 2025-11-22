@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { subscribeUpdate } from "../utils/events";
+import MenuLateral from "../components/MenuLateral";
 import "../styles/Dashboard.css";
 
 export default function Dashboard() {
@@ -8,6 +9,8 @@ export default function Dashboard() {
   const [gastos, setGastos] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filtroCat, setFiltroCat] = useState(null);
+
+  const [openMenu, setOpenMenu] = useState(false);
 
   // Carrega tudo centralizado
   function loadData() {
@@ -23,11 +26,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     loadData();
-
-    const unsubscribe = subscribeUpdate(() => {
-      loadData();
-    });
-
+    const unsubscribe = subscribeUpdate(() => loadData());
     return unsubscribe;
   }, []);
 
@@ -38,14 +37,13 @@ export default function Dashboard() {
   return (
     <div className="dashboard-container">
 
-      <motion.h1
-        className="dashboard-title"
-        initial={{ opacity: 0, y: -15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        Bem-vindo!
-      </motion.h1>
+      {/* BOTÃO MENU (hamburguer no topo esquerdo) */}
+      <button className="menu-btn" onClick={() => setOpenMenu(true)}>
+        ☰
+      </button>
+
+      {/* MENU LATERAL (AGORA FUNCIONANDO DENTRO DO CONTAINER) */}
+      <MenuLateral open={openMenu} onClose={() => setOpenMenu(false)} />
 
       {/* SALDO */}
       <motion.div
@@ -53,14 +51,13 @@ export default function Dashboard() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
       >
-        <p className="saldo-label">Saldo Atual</p>
+        <p className="saldo-label">Saldo da Conta</p>
         <p className="saldo-valor">R$ {saldo.toFixed(2)}</p>
       </motion.div>
 
       {/* CATEGORIAS */}
       <div className="categories-scroll">
         <div className="categories-inner">
-
           {categories.length === 0 && (
             <div className="muted">
               Nenhuma categoria — cadastre em Gerenciar Categorias
@@ -71,9 +68,8 @@ export default function Dashboard() {
             <button
               key={cat.id}
               className={`category-chip ${filtroCat === cat.id ? "active" : ""}`}
-              onClick={() =>
-                setFiltroCat(filtroCat === cat.id ? null : cat.id)
-              }
+              onClick={() => window.location.href = `/categoria/${cat.id}`}
+
             >
               <span className="cat-emoji">{cat.emoji}</span>
               <span className="cat-name">{cat.name}</span>
@@ -105,6 +101,7 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
+
                   <div className="gasto-valor">R$ {g.valor.toFixed(2)}</div>
                 </li>
               );
