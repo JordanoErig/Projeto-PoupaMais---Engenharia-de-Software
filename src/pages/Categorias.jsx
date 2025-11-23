@@ -64,7 +64,7 @@ useEffect(() => {
   return (
     <div className="categorias-container">
       <div className="categorias-header">
-        <BackButton to="/dashboard" />
+        <BackButton/>
         <h2>Gerenciar Categorias</h2>
 
         <button className="btn-primary" onClick={() => setOpenModal(true)}>

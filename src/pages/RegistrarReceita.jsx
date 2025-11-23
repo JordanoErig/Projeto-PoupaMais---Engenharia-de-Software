@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { subscribeUpdate, emitUpdate } from "../utils/events";
 import "../styles/RegistrarReceita.css";
+import BackButton from "../components/BackButton";
 
 export default function RegistrarReceita() {
   const [valor, setValor] = useState("");
@@ -57,19 +58,16 @@ export default function RegistrarReceita() {
     setData("");
   }
 
-  function voltar() {
-    window.history.back();
-  }
-
   return (
     <div className="receita-container">
+          {<BackButton/>}
 
       <motion.div
         className="receita-header"
+        
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <button className="back-btn" onClick={voltar}>←</button>
         <h2>Registrar Receita</h2>
       </motion.div>
 

@@ -1,19 +1,12 @@
 /* CONTAINER GERAL */
 .dashboard-container {
   width: 100%;
-  max-width: 100%;
   min-height: 100vh;
-  min-height: 100dvh;
-
- padding:0;
-  box-sizing: border-box;
-
   background-color: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  position: relative; /* ESSENCIAL PARA O MENU FICAR DENTRO */
+  position: relative;
 }
 
 /* BOTÃO DO MENU */
@@ -28,22 +21,15 @@
   z-index: 50;
 }
 
-/* CARD DE SALDO */
+/* SALDO */
 .saldo-card {
   width: 100%;
   background-color: #4ebfa2;
   color: white;
-  
   padding: 40px 24px 30px 24px;
-
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
-
   box-shadow: 0 4px 15px rgba(78, 191, 162, 0.4);
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
 }
 
@@ -57,53 +43,79 @@
   font-weight: bold;
 }
 
-/* BOTÕES */
+/* LISTA DE GASTOS */
+.gastos-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.gasto-item {
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gasto-left {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.gasto-emoji {
+  font-size: 28px;
+}
+
+.gasto-desc {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #444;
+}
+
+.gasto-date {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.gasto-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gasto-valor {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #d9534f;
+}
+
+/* BOTÃO EXCLUIR */
+.delete-btn {
+  background: #ff4444;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.delete-btn:active {
+  background: #cc0000;
+}
+
+/* BOTÕES FINAIS */
 .dashboard-buttons {
   width: 100%;
   max-width: 350px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-
   margin-top: 40px;
-}
-
-.btn-primary {
-  background-color: #4ebfa2;
-  color: white;
-  padding: 16px;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-primary:active {
-  background-color: #3da68d;
-}
-
-.btn-secondary {
-  background-color: white;
-  border: 2px solid #4ebfa2;
-  color: #4ebfa2;
-  padding: 16px;
-  border-radius: 10px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.btn-secondary:active {
-  background-color: #e9fffa;
-}
-
-/* DESKTOP */
-@media (min-width: 768px) {
-  .dashboard-container {
-    justify-content: flex-start;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 40px;
-  }
 }

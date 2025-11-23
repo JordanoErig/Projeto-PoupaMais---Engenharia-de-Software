@@ -11,15 +11,15 @@
 }
 
 .categorias-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
+   width: 100%;
+   display: flex;
+   justify-content: space-between;
+  margin-top: 60px; /* dá espaço para o backbutton */
 }
 
 .categorias-header h2 {
   margin: 0;
-  color: #222;
+  color: #4ebfa2;
 }
 
 .categorias-list {
@@ -38,7 +38,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #4ebfa2;
+  background: #E8F5E9;
   border: 1px solid #f0f0f0;
   padding: 10px 12px;
   border-radius: 10px;
@@ -56,6 +56,7 @@
 
 .categoria-nome {
   font-weight: 600;
+  color: #1B5E20;
 }
 
 /* modal */
@@ -118,7 +119,7 @@
   background-color: #4ebfa2;
   color: #fff;
   border: none;
-  padding: 10px 14px;
+  padding: 6px;
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;

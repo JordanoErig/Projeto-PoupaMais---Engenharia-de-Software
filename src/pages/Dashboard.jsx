@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { subscribeUpdate } from "../utils/events";
+import { subscribeUpdate, emitUpdate } from "../utils/events";
 import MenuLateral from "../components/MenuLateral";
 import "../styles/Dashboard.css";
 
@@ -9,10 +9,8 @@ export default function Dashboard() {
   const [gastos, setGastos] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filtroCat, setFiltroCat] = useState(null);
-
   const [openMenu, setOpenMenu] = useState(false);
 
-  // Carrega tudo centralizado
   function loadData() {
     const s = parseFloat(localStorage.getItem("saldo") || "0");
     setSaldo(s);
@@ -34,15 +32,37 @@ export default function Dashboard() {
     ? gastos.filter((g) => g.categoriaId === filtroCat)
     : gastos;
 
+  // -------------------------
+  //   EXCLUIR UM GASTO
+  // -------------------------
+  function excluirGasto(id) {
+    if (!window.confirm("Deseja realmente excluir este gasto?")) return;
+
+    const lista = JSON.parse(localStorage.getItem("gastos")) || [];
+    const gasto = lista.find((g) => g.id === id);
+
+    if (!gasto) return;
+
+    const novaLista = lista.filter((g) => g.id !== id);
+    localStorage.setItem("gastos", JSON.stringify(novaLista));
+
+    // Recalcular saldo
+    const saldoAtual = parseFloat(localStorage.getItem("saldo") || "0");
+    const novoSaldo = saldoAtual + gasto.valor; // remove o valor gasto
+    localStorage.setItem("saldo", novoSaldo);
+
+    emitUpdate(); // atualizar dashboard
+
+    loadData();
+  }
+
   return (
     <div className="dashboard-container">
 
-      {/* BOTÃO MENU (hamburguer no topo esquerdo) */}
       <button className="menu-btn" onClick={() => setOpenMenu(true)}>
         ☰
       </button>
 
-      {/* MENU LATERAL (AGORA FUNCIONANDO DENTRO DO CONTAINER) */}
       <MenuLateral open={openMenu} onClose={() => setOpenMenu(false)} />
 
       {/* SALDO */}
@@ -69,7 +89,6 @@ export default function Dashboard() {
               key={cat.id}
               className={`category-chip ${filtroCat === cat.id ? "active" : ""}`}
               onClick={() => window.location.href = `/categoria/${cat.id}`}
-
             >
               <span className="cat-emoji">{cat.emoji}</span>
               <span className="cat-name">{cat.name}</span>
@@ -90,19 +109,29 @@ export default function Dashboard() {
               const cat = categories.find((c) => c.id === g.categoriaId);
               return (
                 <li key={g.id} className="gasto-item">
+
                   <div className="gasto-left">
                     <div className="gasto-emoji">{cat?.emoji || "🏷️"}</div>
                     <div>
-                      <div className="gasto-desc">
-                        {g.descricao || "Sem descrição"}
-                      </div>
+                      <div className="gasto-desc">{g.descricao || "Sem descrição"}</div>
                       <div className="gasto-date">
                         {new Date(g.data).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
 
-                  <div className="gasto-valor">R$ {g.valor.toFixed(2)}</div>
+                  <div className="gasto-right">
+                    <div className="gasto-valor">R$ {g.valor.toFixed(2)}</div>
+
+                    {/* BOTÃO EXCLUIR */}
+                    <button
+                      className="delete-btn"
+                      onClick={() => excluirGasto(g.id)}
+                    >
+                      ✖
+                    </button>
+                  </div>
+
                 </li>
               );
             })}

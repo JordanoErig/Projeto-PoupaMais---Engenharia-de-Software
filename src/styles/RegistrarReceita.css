@@ -7,11 +7,11 @@
 }
 
 .receita-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+  margin-top: 60px; /* dá espaço para o backbutton */
 }
+
 
 .back-btn {
   background: none;
@@ -23,7 +23,7 @@
 
 .receita-header h2 {
   font-size: 1.4rem;
-  color: #333;
+  color: #4ebfa2;
 }
 
 .form-area {
@@ -79,6 +79,7 @@
 
 .receita-item .desc {
   font-weight: bold;
+  color: #4ebfa2
 }
 
 .receita-item .data {

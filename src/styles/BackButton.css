@@ -1,15 +1,16 @@
 .back-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+
   background: #4ebfa2;
   color: white;
   border: none;
-  padding: 8px 14px;
-  font-size: 20px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: .2s;
-  margin-right: 12px; /* Para separar do título */
-}
 
-.back-btn:active {
-  opacity: .7;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 20px;
+
+  cursor: pointer;
+  z-index: 1000; /* garante que não atrapalha elementos */
 }

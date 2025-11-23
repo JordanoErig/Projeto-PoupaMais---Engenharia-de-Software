@@ -1,4 +1,6 @@
-/* CONTAINER GERAL */
+/* ============================
+   CONTAINER GERAL
+================================ */
 .meta-detalhes-container {
   width: 100%;
   max-width: 500px;
@@ -12,27 +14,37 @@
   align-items: center;
 }
 
-/* CABEÇALHO */
+/* ============================
+   CABEÇALHO
+================================ */
 .md-header {
-  width: 100%;
   display: flex;
+  justify-content: center;       /* Centraliza o título */
   align-items: center;
-  gap: 12px;
+  position: relative;
+
+  margin-top: 60px;              /* Espaço para o BackButton */
   margin-bottom: 20px;
+  color: #4ebfa2;
 }
 
+/* Garante que o título fique sempre visível */
 .md-header h2 {
   font-size: 1.6rem;
   font-weight: bold;
   margin: 0;
-  color: #333;
+  color: #4ebfa2;
+  z-index: 5;
 }
 
-/* CÍRCULO DE PROGRESSO */
+/* ============================
+   CÍRCULO DE PROGRESSO
+================================ */
 .progress-wrapper {
   margin-top: 10px;
   margin-bottom: 25px;
-  position: relative;}
+  position: relative;
+}
 
 .progress-circle {
   position: relative;
@@ -55,7 +67,7 @@
 }
 
 .progress-svg .progress {
-  stroke: #4caf50;
+  stroke: #4ebfa2;
   stroke-dasharray: 440;
   stroke-dashoffset: 440;
   transition: stroke-dashoffset 1s ease;
@@ -71,7 +83,9 @@
   color: #333;
 }
 
-/* RESUMO DA META */
+/* ============================
+   RESUMO DA META
+================================ */
 .meta-info {
   width: 100%;
   display: flex;
@@ -109,7 +123,9 @@
   color: #d9534f;
 }
 
-/* HISTÓRICO */
+/* ============================
+   HISTÓRICO
+================================ */
 .historico-section {
   width: 100%;
   margin-top: 10px;
@@ -150,7 +166,9 @@
   color: #4ebfa2;
 }
 
-/* BOTÃO ADICIONAR PROGRESSO */
+/* ============================
+   BOTÃO "ADICIONAR PROGRESSO"
+================================ */
 .btn-add-progresso {
   margin-top: 25px;
   width: 100%;
@@ -162,20 +180,37 @@
   border-radius: 12px;
   border: none;
   cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .btn-add-progresso:active {
   background-color: #3da68d;
 }
 
-/* Texto apagado */
+/* Estado desabilitado (meta concluída) */
+.btn-add-progresso:disabled,
+.btn-add-progresso[disabled] {
+  background: #b3e3d8 !important;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-add-progresso:disabled:hover {
+  background: #b3e3d8 !important;
+}
+
+/* ============================
+   TEXTO MUTED
+================================ */
 .muted {
   text-align: center;
   color: #777;
   font-size: 0.9rem;
 }
 
-/* DESKTOP */
+/* ============================
+   DESKTOP
+================================ */
 @media (min-width: 768px) {
   .meta-detalhes-container {
     padding: 40px;
