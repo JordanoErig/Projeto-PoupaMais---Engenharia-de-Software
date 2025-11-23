@@ -64,12 +64,12 @@ useEffect(() => {
   return (
     <div className="categorias-container">
       <div className="categorias-header">
+        <BackButton to="/dashboard" />
         <h2>Gerenciar Categorias</h2>
 
         <button className="btn-primary" onClick={() => setOpenModal(true)}>
           Adicionar Categoria
         </button>
-        <BackButton to="/dashboard" />
       </div>
 
       <div className="categorias-list">

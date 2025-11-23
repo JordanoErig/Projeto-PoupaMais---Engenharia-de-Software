@@ -1,80 +1,62 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom"; // Hook de navegação
 import { sendUpdate } from "../utils/events";
-import "../styles/AdicionarMeta.css";
+import "../styles/AdicionarMeta.css"; // Seu arquivo CSS
 
 export default function AdicionarMeta() {
+  const navigate = useNavigate(); // Inicia o hook
+  
   const [nome, setNome] = useState("");
   const [valorObjetivo, setValorObjetivo] = useState("");
   const [dataLimite, setDataLimite] = useState("");
 
-  function voltar() {
-    window.history.back();
-  }
+  function salvar(e) {
+    e.preventDefault(); // Impede recarregamento da página
 
-  function salvar() {
-    if (!nome.trim()) {
-      alert("O nome da meta é obrigatório.");
-      return;
-    }
-
-    const valorNum = parseFloat(valorObjetivo);
-    if (!valorNum || valorNum <= 0) {
-      alert("Informe um valor válido e maior que zero.");
-      return;
-    }
-
-    if (!dataLimite) {
-      alert("Selecione uma data limite.");
-      return;
-    }
-
-    const hoje = new Date();
-    const limite = new Date(dataLimite);
-
-    if (limite <= hoje) {
-      alert("A data limite deve ser futura.");
-      return;
-    }
+    // Validações básicas
+    if (!nome.trim()) return alert("Nome é obrigatório");
+    if (!valorObjetivo) return alert("Valor é obrigatório");
+    if (!dataLimite) return alert("Data é obrigatória");
 
     const meta = {
       id: Date.now(),
       nome,
-      valorObjetivo: valorNum,
-      valorAtual: 0,   // O usuário ainda não acumulou nada
+      valorObjetivo: parseFloat(valorObjetivo),
+      valorAtual: 0,
       dataLimite,
     };
 
+    // Salva no LocalStorage
     const lista = JSON.parse(localStorage.getItem("metas")) || [];
     lista.push(meta);
-
     localStorage.setItem("metas", JSON.stringify(lista));
 
+    // Atualiza a lista e navega de volta
     sendUpdate();
-
-    window.location.href = "/metas";
+    navigate("/metas"); // <--- Navegação correta (sem window.location)
   }
 
   return (
     <div className="addmeta-container">
+      
+      {/* Cabeçalho */}
+      <div className="addmeta-header">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          ←
+        </button>
+        <h2 style={{ margin: 0, color: "#4ebfa2" }}>Nova Meta</h2>
+      </div>
 
-      <motion.div
-        className="addmeta-header"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <button className="back-btn" onClick={voltar}>←</button>
-        <h2>Nova Meta</h2>
-      </motion.div>
-
-      <div className="form-area">
-
+      {/* Formulário */}
+      <form className="form-area" onSubmit={salvar}>
+        
         <label>Nome da Meta</label>
         <input
           type="text"
           value={nome}
           onChange={(e) => setNome(e.target.value)}
-          placeholder="Ex: Comprar um notebook"
+          placeholder="Ex: Viagem de Férias"
+          required
         />
 
         <label>Valor Objetivo (R$)</label>
@@ -82,7 +64,9 @@ export default function AdicionarMeta() {
           type="number"
           value={valorObjetivo}
           onChange={(e) => setValorObjetivo(e.target.value)}
-          placeholder="Ex: 3500"
+          placeholder="Ex: 5000"
+          step="0.01"
+          required
         />
 
         <label>Data Limite</label>
@@ -90,14 +74,15 @@ export default function AdicionarMeta() {
           type="date"
           value={dataLimite}
           onChange={(e) => setDataLimite(e.target.value)}
+          required
         />
 
-        <button className="btn-salvar" onClick={salvar}>
+        {/* Note que aqui usamos a SUA classe do CSS: btn-salvar */}
+        <button type="submit" className="btn-salvar">
           Salvar Meta
         </button>
 
-      </div>
-
+      </form>
     </div>
   );
 }

@@ -1,126 +1,183 @@
-/* CONTAINER PRINCIPAL */
+/* CONTAINER GERAL */
 .meta-detalhes-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
   padding: 20px;
   min-height: 100vh;
-  background-color: #f8fff8;
+  box-sizing: border-box;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* TÍTULO */
-.titulo-meta {
-  font-size: 24px;
+/* CABEÇALHO */
+.md-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.md-header h2 {
+  font-size: 1.6rem;
   font-weight: bold;
-  margin-top: 10px;
-  color: #2e7d32;
-  text-align: center;
+  margin: 0;
+  color: #333;
 }
 
 /* CÍRCULO DE PROGRESSO */
-.progresso-circulo {
+.progress-wrapper {
+  margin-top: 10px;
+  margin-bottom: 25px;
+  position: relative;}
+
+.progress-circle {
   position: relative;
-  width: 180px;
-  height: 180px;
-  margin: 25px 0;
+  width: 160px;
+  height: 160px;
 }
 
-.progresso-texto {
+.progress-svg {
+  width: 160px;
+  height: 160px;
+  transform: rotate(-90deg);
+}
+
+.progress-svg circle {
+  fill: none;
+}
+
+.progress-svg .bg {
+  stroke: #e4e4e4;
+}
+
+.progress-svg .progress {
+  stroke: #4caf50;
+  stroke-dasharray: 440;
+  stroke-dashoffset: 440;
+  transition: stroke-dashoffset 1s ease;
+}
+
+.progress-text {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 26px;
+  font-size: 24px;
   font-weight: bold;
-  color: #2e7d32;
-}
-
-/* INFORMAÇÕES DA META */
-.meta-info {
-  width: 90%;
-  max-width: 420px;
-  background: #ffffff;
-  padding: 18px;
-  border-radius: 14px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 25px;
-}
-
-.meta-info p {
-  font-size: 16px;
-  margin: 8px 0;
   color: #333;
 }
 
-/* BOTÃO ADICIONAR PROGRESSO */
-.btn-adicionar-progresso {
-  width: 90%;
-  max-width: 420px;
-  background-color: #4caf50;
-  color: white;
-  padding: 14px;
-  text-align: center;
-  border-radius: 10px;
-  border: none;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
+/* RESUMO DA META */
+.meta-info {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 25px;
-  transition: 0.2s;
+  margin-top: 10px;
 }
 
-.btn-adicionar-progresso:hover {
-  background-color: #43a047;
-  transform: scale(1.02);
+.info-box {
+  background: #f7fdfb;
+  border: 1px solid #d8f4ec;
+  padding: 12px 16px;
+  border-radius: 10px;
+  width: 30%;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+
+.info-box .label {
+  font-size: 0.8rem;
+  color: #444;
+}
+
+.info-box .value {
+  font-size: 1rem;
+  margin-top: 4px;
+  font-weight: bold;
+}
+
+.green {
+  color: #2f8d72;
+}
+
+.red {
+  color: #d9534f;
 }
 
 /* HISTÓRICO */
-.titulo-historico {
-  width: 90%;
-  max-width: 420px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #1b5e20;
-  margin-bottom: 10px;
+.historico-section {
+  width: 100%;
+  margin-top: 10px;
 }
 
-.historico-lista {
-  width: 90%;
-  max-width: 420px;
+.historico-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #333;
 }
 
-.historico-item {
-  background: white;
-  padding: 12px 15px;
-  margin-bottom: 10px;
+.historico-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.hist-item {
+  background: #ffffff;
+  border: 1px solid #e8e8e8;
+  padding: 12px 16px;
   border-radius: 10px;
-  border-left: 6px solid #4caf50;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-.historico-item span {
-  font-size: 16px;
-  font-weight: bold;
-  color: #2e7d32;
-}
-
-.historico-item .data {
-  font-size: 14px;
-  color: #555;
-  font-weight: normal;
-}
-
-.sem-historico {
+.hist-data {
+  font-size: 0.9rem;
   color: #666;
-  font-size: 16px;
-  margin-top: 5px;
 }
 
-/* ERRO */
-.erro {
-  font-size: 20px;
-  color: red;
+.hist-valor {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #4ebfa2;
+}
+
+/* BOTÃO ADICIONAR PROGRESSO */
+.btn-add-progresso {
+  margin-top: 25px;
+  width: 100%;
+  padding: 16px;
+  background-color: #4ebfa2;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-add-progresso:active {
+  background-color: #3da68d;
+}
+
+/* Texto apagado */
+.muted {
+  text-align: center;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+/* DESKTOP */
+@media (min-width: 768px) {
+  .meta-detalhes-container {
+    padding: 40px;
+  }
 }

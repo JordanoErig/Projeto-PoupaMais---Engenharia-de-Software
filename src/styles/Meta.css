@@ -3,6 +3,7 @@
   min-height: 100vh;
   padding: 20px;
   box-sizing: border-box;
+  background-color: #ffffff;
 }
 
 .metas-header {
@@ -13,9 +14,9 @@
 }
 
 .btn-add {
-  background-color: #4ebfa2;
+  background-color: #4ebfb2;
   color: white;
-  border: none;
+  border: white;
   padding: 10px 14px;
   border-radius: 8px;
   cursor: pointer;
@@ -34,7 +35,7 @@
 }
 
 .meta-card {
-  background: #ffffff;
+  background: #4ebfb2;
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -84,7 +85,7 @@
 
 .progress-fill {
   height: 100%;
-  background: #4ebfa2;
+  background: #186451;
 }
 
 .progress-text {

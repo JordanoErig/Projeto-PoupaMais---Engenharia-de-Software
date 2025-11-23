@@ -1,114 +1,105 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { sendUpdate } from "../utils/events";
+import BackButton from "../components/BackButton";
 import "../styles/AdicionarProgresso.css";
 
 export default function AdicionarProgresso() {
   const { id } = useParams();
-  const [meta, setMeta] = useState(null);
+  const navigate = useNavigate();
 
+  const [meta, setMeta] = useState(null);
   const [valor, setValor] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [data, setData] = useState("");
 
   useEffect(() => {
     const metas = JSON.parse(localStorage.getItem("metas")) || [];
     const encontrada = metas.find((m) => m.id === Number(id));
 
     if (!encontrada) {
-      alert("Meta não encontrada.");
-      window.location.href = "/metas";
+      alert("Meta não encontrada!");
+      navigate("/metas");
       return;
     }
 
     setMeta(encontrada);
-  }, [id]);
+  }, [id, navigate]);
 
-  function salvarProgresso() {
-    if (!valor || Number(valor) <= 0) {
-      alert("Informe um valor válido.");
-      return;
-    }
+  function salvarProgresso(e) {
+    e.preventDefault();
 
-    if (!data) {
-      alert("Informe uma data.");
+    const valorNumero = Number(valor);
+
+    if (!valor || valorNumero <= 0) {
+      alert("Digite um valor válido.");
       return;
     }
 
     const metas = JSON.parse(localStorage.getItem("metas")) || [];
     const index = metas.findIndex((m) => m.id === Number(id));
 
-    const novoProgresso = {
-      id: Date.now(),
-      valor: Number(valor),
-      descricao: descricao || "Depósito",
-      data,
-    };
+    if (index === -1) return;
 
-    // Atualiza lista de progressos
-    metas[index].progressos = metas[index].progressos || [];
-    metas[index].progressos.push(novoProgresso);
+    // Soma valor ao total
+    metas[index].valorAtual += valorNumero;
 
-    // Atualiza valor atual da meta
-    metas[index].valorAtual += Number(valor);
+    // Cria histórico se não existir
+    if (!Array.isArray(metas[index].historico)) {
+      metas[index].historico = [];
+    }
 
-    // Salva no localStorage
+    // Registra histórico
+    metas[index].historico.push({
+      valor: valorNumero,
+      data: new Date().toISOString(),
+    });
+
+    // Salva tudo
     localStorage.setItem("metas", JSON.stringify(metas));
 
-    // Atualiza dashboards/listas via evento
+    // Atualiza outras telas
     sendUpdate();
 
-    // Volta para a tela de detalhes
-    window.location.href = `/meta/${id}`;
+    // Volta para os detalhes
+    navigate(`/metas/${id}`);
   }
 
-  function voltar() {
-    window.history.back();
-  }
+  if (!meta) return <p>Carregando...</p>;
 
   return (
     <div className="add-progresso-container">
-      <button className="back-btn" onClick={voltar}>←</button>
-      <h2>Adicionar Progresso</h2>
+      <BackButton to={`/metas/${id}`} />
 
-      {meta && (
-        <p className="meta-label">
-          Meta: <strong>{meta.nome}</strong>
+      <motion.div
+        className="add-progresso-card"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h2>Adicionar Progresso</h2>
+
+        <p className="meta-nome">{meta.nome}</p>
+        <p className="meta-info">
+          Meta: <strong>R$ {meta.valorObjetivo.toFixed(2)}</strong>
         </p>
-      )}
+        <p className="meta-info">
+          Já poupado: <strong>R$ {meta.valorAtual.toFixed(2)}</strong>
+        </p>
 
-      <div className="form-group">
-        <label>Valor</label>
-        <input
-          type="number"
-          placeholder="Ex: 50.00"
-          value={valor}
-          onChange={(e) => setValor(e.target.value)}
-        />
-      </div>
+        <form onSubmit={salvarProgresso}>
+          <label>Valor a adicionar:</label>
+          <input
+            type="number"
+            step="0.01"
+            placeholder="Ex: 50.00"
+            value={valor}
+            onChange={(e) => setValor(e.target.value)}
+          />
 
-      <div className="form-group">
-        <label>Descrição (opcional)</label>
-        <input
-          type="text"
-          placeholder="Ex: depósito extra"
-          value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
-        />
-      </div>
-
-      <div className="form-group">
-        <label>Data</label>
-        <input
-          type="date"
-          value={data}
-          onChange={(e) => setData(e.target.value)}
-        />
-      </div>
-
-      <button className="btn-salvar" onClick={salvarProgresso}>
-        Salvar Progresso
-      </button>
+          <button className="btn-salvar" type="submit">
+            Salvar
+          </button>
+        </form>
+      </motion.div>
     </div>
   );
 }

@@ -38,7 +38,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #1B5E20;
+  background: #4ebfa2;
   border: 1px solid #f0f0f0;
   padding: 10px 12px;
   border-radius: 10px;
@@ -131,9 +131,9 @@
   cursor: pointer;
 }
 .btn-danger {
-  background: #fff;
+  background: #ee0d0d;
   border: 1px solid #ff6b6b;
-  color: #ff6b6b;
+  color: #ffffff;
   padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
@@ -168,17 +168,13 @@
   gap: 8px;
   padding: 10px 14px;
   margin-right: 10px;
-  background: #1B5E20; /* VERDE ESCURO */
+  background: #4ebfa2;
   color: white;
   border-radius: 20px;
   border: none;
   font-size: 14px;
   cursor: pointer;
   transition: 0.2s;
-}
-
-.category-chip.active {
-  background: #43A047; /* VERDE CLARO */
 }
 
 .cat-emoji { font-size: 18px; }

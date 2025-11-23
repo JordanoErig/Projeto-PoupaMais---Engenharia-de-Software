@@ -1,17 +1,15 @@
 .back-btn {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: #4ebfa2; /* Verde escuro */
+  background: #4ebfa2;
   color: white;
   border: none;
-  padding: 8px 12px;
+  padding: 8px 14px;
   font-size: 20px;
   border-radius: 8px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: .2s;
+  margin-right: 12px; /* Para separar do título */
 }
 
 .back-btn:active {
-  opacity: 0.7;
+  opacity: .7;
 }

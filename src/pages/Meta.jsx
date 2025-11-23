@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom"; // <--- IMPORTANTE
 import { subscribeUpdate } from "../utils/events";
 import BackButton from "../components/BackButton";
-import "../styles/Metas.css";
+import "../styles/Meta.css";
 
 export default function Meta() {
+  const navigate = useNavigate(); // <--- HOOK DE NAVEGAÇÃO
   const [metas, setMetas] = useState([]);
 
   function loadMetas() {
@@ -14,43 +16,44 @@ export default function Meta() {
 
   useEffect(() => {
     loadMetas();
-
     const unsub = subscribeUpdate(() => {
       loadMetas();
     });
-
     return unsub;
   }, []);
 
   function calcularStatus(meta) {
     const hoje = new Date();
+    // Ajusta a hora para comparar apenas a data, evitando falsos vencidos
+    hoje.setHours(0, 0, 0, 0); 
     const limite = new Date(meta.dataLimite);
+    limite.setHours(0, 0, 0, 0); 
+    // Correção: Converter string para número
+    const limiteEstrangeiro = new Date(limite.getTime() + 86400000); // Add 1 dia para compensar fuso se necessário
 
-    if (meta.valorAtual >= meta.valorObjetivo) {
-      return "Concluída";
-    }
-
-    if (hoje > limite) {
-      return "Vencida";
-    }
-
+    if (meta.valorAtual >= meta.valorObjetivo) return "Concluída";
+    if (hoje > limiteEstrangeiro) return "Vencida";
     return "Em andamento";
   }
 
   function progresso(meta) {
+    if(meta.valorObjetivo === 0) return 0; // Evita divisão por zero
     return Math.min(
       100,
       Math.round((meta.valorAtual / meta.valorObjetivo) * 100)
     );
   }
 
+  // Navegação correta do React
   function navegarAdicionar() {
-    window.location.href = "/adicionar-meta";
+    navigate("/metas/adicionar");
   }
 
   return (
     <div className="metas-container">
-        <BackButton to="/dashboard" />
+      {/* Se o seu BackButton já usa useNavigate internamente, está ok. 
+          Se não, considere usar navigate(-1) */}
+      <BackButton to="/dashboard" />
 
       <motion.div
         className="metas-header"
@@ -64,7 +67,9 @@ export default function Meta() {
       </motion.div>
 
       {metas.length === 0 && (
-        <p className="muted">Nenhuma meta criada ainda.</p>
+        <p className="muted" style={{textAlign: "center", marginTop: "20px"}}>
+            Nenhuma meta criada ainda.
+        </p>
       )}
 
       <div className="lista-metas">
@@ -74,20 +79,22 @@ export default function Meta() {
             className="meta-card"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
+            onClick={() => navigate(`/metas/${meta.id}`)}
           >
             <div className="meta-top">
               <h3>{meta.nome}</h3>
-              <span className={`status ${calcularStatus(meta)}`}>
+              {/* Adicionei uma classe lowercase para o CSS funcionar melhor */}
+              <span className={`status ${calcularStatus(meta).toLowerCase().replace(" ", "-")}`}>
                 {calcularStatus(meta)}
               </span>
             </div>
 
             <p className="meta-data">
-              Prazo: {new Date(meta.dataLimite).toLocaleDateString()}
+              Prazo: {new Date(meta.dataLimite).toLocaleDateString("pt-BR", {timeZone: 'UTC'})}
             </p>
 
             <p className="meta-valores">
-              R$ {meta.valorAtual.toFixed(2)} / R$ {meta.valorObjetivo.toFixed(2)}
+              R$ {Number(meta.valorAtual).toFixed(2)} / R$ {Number(meta.valorObjetivo).toFixed(2)}
             </p>
 
             <div className="progress-bar">
@@ -97,11 +104,10 @@ export default function Meta() {
               ></div>
             </div>
 
-            <p className="progress-text">{progresso(meta)}%</p>
+            {/* <p className="progress-text">{progresso(meta)}%</p> */}
           </motion.div>
         ))}
       </div>
-
     </div>
   );
 }

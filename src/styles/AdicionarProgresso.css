@@ -1,51 +1,83 @@
 .add-progresso-container {
+  min-height: 100vh;
   padding: 20px;
-  max-width: 500px;
-  margin: 0 auto;
+  background: #f0f2f5;
 }
 
-.back-btn {
-  font-size: 1.5rem;
-  border: none;
-  background: none;
-  cursor: pointer;
-  color: #4ebfa2;
+.add-progresso-card {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 420px;
+  margin: 30px auto;
+}
+
+.add-progresso-card h2 {
+  font-size: 1.6rem;
   margin-bottom: 10px;
+  text-align: center;
+  color: #333;
 }
 
-h2 {
-  margin-bottom: 15px;
+.meta-nome {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #444;
 }
 
-.meta-label {
-  margin-bottom: 20px;
-  color: #555;
+.meta-info {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  text-align: center;
+  color: #666;
 }
 
-.form-group {
-  margin-bottom: 18px;
+form {
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
+  gap: 15px;
 }
 
-.form-group label {
-  font-size: 0.9rem;
-  margin-bottom: 6px;
+label {
+  font-size: 0.95rem;
+  color: #444;
+  font-weight: 500;
 }
 
-.form-group input {
+input {
   padding: 12px;
-  border: 1px solid #4ebfa2;
+  border: 1px solid #ccc;
   border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.3);
 }
 
 .btn-salvar {
-  width: 100%;
-  padding: 14px;
-  background: #4ebfa2;
-  color: white;
+  background: #4caf50;
   border: none;
-  border-radius: 10px;
-  font-size: 1rem;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-salvar:hover {
+  background: #43a047;
+}
+
+.btn-salvar:active {
+  transform: scale(0.97);
 }

@@ -6,127 +6,126 @@ import "../styles/MetaDetalhes.css";
 
 export default function MetaDetalhes() {
   const { id } = useParams();
-  const navigate = useNavigate();
-
+  const navigate = useNavigate(); // <--- CORREÇÃO
   const [meta, setMeta] = useState(null);
 
-  // Carregar meta do localStorage
   useEffect(() => {
     const metas = JSON.parse(localStorage.getItem("metas")) || [];
-    const encontrada = metas.find((m) => String(m.id) === String(id));
-    setMeta(encontrada || null);
+    const encontrada = metas.find((m) => m.id === parseInt(id));
+    setMeta(encontrada);
   }, [id]);
 
   if (!meta) {
     return (
       <div className="meta-detalhes-container">
         <BackButton />
-        <h2 className="erro">Meta não encontrada</h2>
+        <p className="muted">Meta não encontrada.</p>
       </div>
     );
   }
 
-  // Cálculo de progresso
-  const progressoPercentual = Math.min(
-    ((meta.valorAtual || 0) / meta.valorObjetivo) * 100,
-    100
-  );
+  const total = Number(meta.valorObjetivo);
+  const atual = Number(meta.valorAtual) || 0;
+  const porcentagem = Math.min(100, Math.round((atual / total) * 100));
 
-  const progressoFormatado = progressoPercentual.toFixed(1);
-
-  // Navegar para adicionar progresso
-  function handleAdicionarProgresso() {
-    navigate(`/meta/${meta.id}/adicionar-progresso`);
-  }
+  const circleLength = 440; // circunferência para strokeDasharray
 
   return (
-    <motion.div
-      className="meta-detalhes-container"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-    >
-      <BackButton />
+    <div className="meta-detalhes-container">
 
-      <h2 className="titulo-meta">{meta.nome}</h2>
+      {/* Cabeçalho */}
+      <div className="md-header">
+        <BackButton to="/metas" />
+        <h2>{meta.nome}</h2>
+      </div>
 
-      {/* CÍRCULO DE PROGRESSO */}
-      <div className="progresso-circulo">
-        <svg width="180" height="180">
-          <circle
-            cx="90"
-            cy="90"
-            r="75"
-            stroke="#ccc"
-            strokeWidth="12"
-            fill="none"
-          />
+      {/* Círculo de progresso */}
+      <div className="progress-wrapper">
+        <div className="progress-circle">
+  <svg width="160" height="160" style={{ transform: "rotate(-90deg)" }}>
+    
+    <circle
+      cx="80"
+      cy="80"
+      r="70"
+      fill="none"
+      stroke="#e4e4e4"
+      strokeWidth="12"
+    />
 
-          <motion.circle
-            cx="90"
-            cy="90"
-            r="75"
-            stroke="#4CAF50"
-            strokeWidth="12"
-            fill="none"
-            strokeDasharray={2 * Math.PI * 75}
-            strokeDashoffset={2 * Math.PI * 75 * (1 - progressoPercentual / 100)}
-            strokeLinecap="round"
-            initial={{ strokeDashoffset: 2 * Math.PI * 75 }}
-            animate={{
-              strokeDashoffset:
-                2 * Math.PI * 75 * (1 - progressoPercentual / 100),
-            }}
-            transition={{ duration: 1 }}
-          />
-        </svg>
+    <motion.circle
+      cx="80"
+      cy="80"
+      r="70"
+      fill="none"
+      stroke="#4ebfa2"
+      strokeWidth="12"
+      strokeLinecap="round"
+      strokeDasharray="440"
+      initial={{ strokeDashoffset: 440 }}
+      animate={{ strokeDashoffset: 440 - (440 * porcentagem) / 100 }}
+      transition={{ duration: 1 }}
+    />
+  </svg>
 
-        <div className="progresso-texto">
-          {progressoFormatado}%  
+  <div className="progress-text">{porcentagem}%</div>
+</div>
+
+
+
+      </div>
+
+      {/* Resumo */}
+      <div className="meta-info">
+        <div className="info-box">
+          <p className="label">Meta Total</p>
+          <p className="value">R$ {total.toFixed(2)}</p>
+        </div>
+
+        <div className="info-box">
+          <p className="label">Poupado</p>
+          <p className="value green">R$ {atual.toFixed(2)}</p>
+        </div>
+
+        <div className="info-box">
+          <p className="label">Faltam</p>
+          <p className="value red">
+            R$ {(total - atual).toFixed(2)}
+          </p>
         </div>
       </div>
 
-      {/* INFORMAÇÕES DA META */}
-      <div className="meta-info">
-        <p>
-          <strong>Valor Objetivo:</strong> R$ {meta.valorObjetivo.toFixed(2)}
-        </p>
-        <p>
-          <strong>Poupado:</strong> R$ {(meta.valorAtual || 0).toFixed(2)}
-        </p>
-        <p>
-          <strong>Restante:</strong>{" "}
-          R$ {(meta.valorObjetivo - (meta.valorAtual || 0)).toFixed(2)}
-        </p>
-        <p>
-          <strong>Data Limite:</strong> {meta.dataLimite}
-        </p>
+      {/* Histórico */}
+      <div className="historico-section">
+        <h3>Histórico de Adições</h3>
+
+        {(!meta.historico || meta.historico.length === 0) && (
+          <p className="muted">Nenhum valor adicionado ainda.</p>
+        )}
+
+        <ul className="historico-list">
+          {meta.historico?.map((h) => (
+            <li key={h.id} className="hist-item">
+              <div>
+                <p className="hist-data">
+                  {new Date(h.data).toLocaleDateString()}
+                </p>
+              </div>
+
+              <p className="hist-valor">+ R$ {h.valor.toFixed(2)}</p>
+            </li>
+          ))}
+        </ul>
       </div>
 
-      {/* BOTÃO ADICIONAR PROGRESSO */}
-      <button className="btn-adicionar-progresso" onClick={handleAdicionarProgresso}>
-        Adicionar Progresso
+      {/* Botão adicionar progresso */}
+      <button
+        className="btn-add-progresso"
+        onClick={() => navigate(`/metas/${meta.id}/progresso`)}
+      >
+        Adicionar Valor
       </button>
 
-      {/* HISTÓRICO */}
-      <h3 className="titulo-historico">Histórico de Progresso</h3>
-
-      <div className="historico-lista">
-        {meta.historico && meta.historico.length > 0 ? (
-          meta.historico.map((item, index) => (
-            <motion.div
-              key={index}
-              className="historico-item"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-            >
-              <span>+ R$ {item.valor.toFixed(2)}</span>
-              <span className="data">{item.data}</span>
-            </motion.div>
-          ))
-        ) : (
-          <p className="sem-historico">Nenhum valor adicionado ainda.</p>
-        )}
-      </div>
-    </motion.div>
+    </div>
   );
 }
