@@ -1,29 +1,48 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom"; // 👈 Importa o Hook
 import "../styles/Login.css"; 
 import loginImg from "../assets/imagens/loginImg.jpeg";
 
 export default function Login() {
-
+  const navigate = useNavigate(); // 👈 Ativa o Hook
+  
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
 
-    const usuarioSalvo = JSON.parse(localStorage.getItem("user"));
+    // 1. 🚨 BUSCA A LISTA COMPLETA DE USUÁRIOS
+    const listaUsuarios = JSON.parse(localStorage.getItem("usuariosCadastrados"));
 
-    if (!usuarioSalvo) {
+    if (!listaUsuarios || listaUsuarios.length === 0) {
       alert("Nenhum usuário cadastrado!");
       return;
     }
 
-    if (email === usuarioSalvo.email && senha === usuarioSalvo.senha) {
-      // Salva sessão
+    // 2. ENCONTRA O USUÁRIO PELO EMAIL E SENHA
+    const usuarioEncontrado = listaUsuarios.find(
+      (u) => u.email === email && u.senha === senha
+    );
+
+    if (usuarioEncontrado) {
+      
+      // 🚨 PASSO CRÍTICO: LIMPA sessões antigas e salva o NOVO IDENTIFICADOR
+      localStorage.removeItem("isLogged");
+      localStorage.removeItem("userEmailLogado"); 
+
+      // 3. Salva a sessão como logada
       localStorage.setItem("isLogged", "true");
 
-      alert("Login realizado com sucesso!");
-      window.location.href = "/dashboard";
+      // 4. Salva o IDENTIFICADOR UNICO (Email) para carregar os dados financeiros corretos.
+      localStorage.setItem("userEmailLogado", usuarioEncontrado.email); 
+
+      alert(`Login realizado com sucesso! Bem-vindo(a), ${usuarioEncontrado.nome}.`);
+      
+      // 5. Usa a navegação correta do React
+      navigate("/dashboard");
+
     } else {
       alert("E-mail ou senha inválidos!");
     }
@@ -33,7 +52,7 @@ export default function Login() {
     <div className="login-container">
 
       <button
-        onClick={() => (window.location.href = "/")}
+        onClick={() => navigate("/")} // 👈 Usando navigate
         className="back-btn"
         aria-label="Voltar"
       >

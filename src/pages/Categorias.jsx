@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { sendUpdate } from "../utils/events";
+import { useNavigate } from "react-router-dom"; // 👈 Adiciona o hook de navegação
 import "../styles/Categorias.css";
 import BackButton from "../components/BackButton";
 
@@ -8,29 +9,58 @@ function uid() {
 }
 
 export default function Categorias() {
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [nome, setNome] = useState("");
   const [emoji, setEmoji] = useState("");
 
- // Carrega somente uma vez
-useEffect(() => {
-  const stored = JSON.parse(localStorage.getItem("categories"));
-  if (stored && Array.isArray(stored) && stored.length > 0) {
-    setCategories(stored);
-  }
-}, []);
+  // 🚨 CHAVE DE USUÁRIO: Obtém o email do usuário logado
+  const userEmail = localStorage.getItem("userEmailLogado"); 
 
-// Só salva se realmente houver categorias
-useEffect(() => {
-  if (categories && categories.length > 0) {
-    localStorage.setItem("categories", JSON.stringify(categories));
+  // Função para carregar e filtrar as categorias
+  function loadCategories() {
+    // 🚨 SEGURANÇA: Verifica se o usuário está logado
+    if (!userEmail) {
+        navigate("/login");
+        return [];
+    }
+    
+    // 1. Pega a lista GLOBAL de categorias
+    const allStored = JSON.parse(localStorage.getItem("categories")) || [];
+    
+    // 2. 🚨 FILTRA: Apenas categorias onde o 'userEmail' corresponde ao usuário logado
+    const userCategories = allStored.filter(c => c.userEmail === userEmail);
+    
+    setCategories(userCategories);
+    return allStored; // Retorna a lista global para uso no `handleDelete`
   }
-}, [categories]);
 
+  // Carrega somente uma vez e se inscreve em updates
+  useEffect(() => {
+    loadCategories();
+    // Você pode querer se inscrever em updates se outra parte do app mudar categorias
+    // const unsub = subscribeUpdate(() => loadCategories());
+    // return unsub;
+    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userEmail, navigate]);
+
+  // Função auxiliar para salvar a lista completa de volta no localStorage
+  function saveAllCategories(list) {
+      localStorage.setItem("categories", JSON.stringify(list));
+      sendUpdate();
+  }
 
   const handleAdd = (e) => {
     e.preventDefault();
+    
+    if (!userEmail) {
+      alert("Sessão expirada. Faça login novamente.");
+      navigate("/login");
+      return;
+    }
+    
     if (!nome.trim()) {
       alert("Informe um nome para a categoria.");
       return;
@@ -40,12 +70,18 @@ useEffect(() => {
       id: uid(),
       name: nome.trim(),
       emoji: emoji.trim() || "🏷️",
+      userEmail: userEmail, // 👈 CHAVE CRÍTICA: Associa a categoria ao usuário
     };
 
-    const next = [newCat, ...categories];
-    setCategories(next);
-
-    sendUpdate();
+    // 1. Pega a lista GLOBAL
+    const allCategories = JSON.parse(localStorage.getItem("categories")) || [];
+    
+    // 2. Adiciona a nova categoria (lista global)
+    allCategories.unshift(newCat);
+    saveAllCategories(allCategories);
+    
+    // 3. Atualiza o estado local (que é filtrado)
+    setCategories(prev => [newCat, ...prev]);
 
     setNome("");
     setEmoji("");
@@ -55,10 +91,18 @@ useEffect(() => {
   const handleDelete = (id) => {
     if (!window.confirm("Remover categoria? Gastos antigos manterão o ID.")) return;
 
-    const updated = categories.filter((c) => c.id !== id);
-    setCategories(updated);
-
-    sendUpdate();
+    // 1. Pega a lista GLOBAL
+    const allCategories = JSON.parse(localStorage.getItem("categories")) || [];
+    
+    // 2. 🚨 Remove APENAS o item com o ID específico, de toda a lista
+    const updatedGlobal = allCategories.filter((c) => c.id !== id);
+    
+    // 3. Salva a lista GLOBAL atualizada
+    saveAllCategories(updatedGlobal);
+    
+    // 4. Atualiza o estado local (que já é filtrado por usuário)
+    const updatedUserList = categories.filter((c) => c.id !== id);
+    setCategories(updatedUserList);
   };
 
   return (
@@ -77,6 +121,7 @@ useEffect(() => {
           <p className="muted">Nenhuma categoria criada ainda.</p>
         )}
 
+        {/* Exibe apenas as categorias do usuário logado */}
         {categories.map((c) => (
           <div className="categoria-item" key={c.id}>
             <div className="categoria-info">

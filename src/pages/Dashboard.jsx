@@ -1,64 +1,86 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { subscribeUpdate, emitUpdate } from "../utils/events";
+import { useNavigate } from "react-router-dom";
 import MenuLateral from "../components/MenuLateral";
 import "../styles/Dashboard.css";
 
 export default function Dashboard() {
-  const [saldo, setSaldo] = useState(0);
+  const navigate = useNavigate();
+
   const [gastos, setGastos] = useState([]);
+  const [receitas, setReceitas] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filtroCat, setFiltroCat] = useState(null);
   const [openMenu, setOpenMenu] = useState(false);
 
+  // Email do usuário logado
+  const userEmail = localStorage.getItem("userEmailLogado");
+
+  // SALDO DINÂMICO = receitas – gastos
+  const saldo = (() => {
+    const totalReceitas = receitas.reduce((s, r) => s + r.valor, 0);
+    const totalGastos = gastos.reduce((s, g) => s + g.valor, 0);
+    return Number((totalReceitas - totalGastos).toFixed(2));
+  })();
+
   function loadData() {
-    const s = parseFloat(localStorage.getItem("saldo") || "0");
-    setSaldo(s);
+    if (!userEmail) {
+      localStorage.removeItem("isLogged");
+      navigate("/login");
+      return;
+    }
 
-    const g = JSON.parse(localStorage.getItem("gastos")) || [];
-    setGastos(g);
+    // Carrega GASTOS do usuário
+    const allGastos = JSON.parse(localStorage.getItem("gastos")) || [];
+    const userGastos = allGastos
+      .filter((g) => g.userEmail === userEmail)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-    const c = JSON.parse(localStorage.getItem("categories")) || [];
-    setCategories(c);
+    setGastos(userGastos);
+
+    // Carrega RECEITAS do usuário
+    const allReceitas = JSON.parse(localStorage.getItem("receitas")) || [];
+    const userReceitas = allReceitas
+      .filter((r) => r.userEmail === userEmail)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    setReceitas(userReceitas);
+
+    // Carrega CATEGORIAS do usuário
+    const allCategories = JSON.parse(localStorage.getItem("categories")) || [];
+    const userCategories = allCategories.filter(
+      (c) => c.userEmail === userEmail
+    );
+    setCategories(userCategories);
   }
 
   useEffect(() => {
     loadData();
-    const unsubscribe = subscribeUpdate(() => loadData());
-    return unsubscribe;
-  }, []);
+    const unsub = subscribeUpdate(loadData);
+    return unsub;
+  }, [userEmail]);
 
   const gastosFiltrados = filtroCat
     ? gastos.filter((g) => g.categoriaId === filtroCat)
     : gastos;
 
-  // -------------------------
-  //   EXCLUIR UM GASTO
-  // -------------------------
   function excluirGasto(id) {
     if (!window.confirm("Deseja realmente excluir este gasto?")) return;
 
-    const lista = JSON.parse(localStorage.getItem("gastos")) || [];
-    const gasto = lista.find((g) => g.id === id);
+    const allGastos = JSON.parse(localStorage.getItem("gastos")) || [];
+    const novaLista = allGastos.filter(
+      (g) => !(g.id === id && g.userEmail === userEmail)
+    );
 
-    if (!gasto) return;
-
-    const novaLista = lista.filter((g) => g.id !== id);
     localStorage.setItem("gastos", JSON.stringify(novaLista));
 
-    // Recalcular saldo
-    const saldoAtual = parseFloat(localStorage.getItem("saldo") || "0");
-    const novoSaldo = saldoAtual + gasto.valor; // remove o valor gasto
-    localStorage.setItem("saldo", novoSaldo);
-
-    emitUpdate(); // atualizar dashboard
-
+    emitUpdate();
     loadData();
   }
 
   return (
     <div className="dashboard-container">
-
       <button className="menu-btn" onClick={() => setOpenMenu(true)}>
         ☰
       </button>
@@ -87,8 +109,10 @@ export default function Dashboard() {
           {categories.map((cat) => (
             <button
               key={cat.id}
-              className={`category-chip ${filtroCat === cat.id ? "active" : ""}`}
-              onClick={() => window.location.href = `/categoria/${cat.id}`}
+              className={`category-chip ${
+                filtroCat === cat.id ? "active" : ""
+              }`}
+              onClick={() => navigate(`/categoria/${cat.id}`)}
             >
               <span className="cat-emoji">{cat.emoji}</span>
               <span className="cat-name">{cat.name}</span>
@@ -109,11 +133,14 @@ export default function Dashboard() {
               const cat = categories.find((c) => c.id === g.categoriaId);
               return (
                 <li key={g.id} className="gasto-item">
-
                   <div className="gasto-left">
-                    <div className="gasto-emoji">{cat?.emoji || "🏷️"}</div>
+                    <div className="gasto-emoji">
+                      {cat?.emoji || "🏷️"}
+                    </div>
                     <div>
-                      <div className="gasto-desc">{g.descricao || "Sem descrição"}</div>
+                      <div className="gasto-desc">
+                        {g.descricao || "Sem descrição"}
+                      </div>
                       <div className="gasto-date">
                         {new Date(g.data).toLocaleDateString()}
                       </div>
@@ -121,9 +148,10 @@ export default function Dashboard() {
                   </div>
 
                   <div className="gasto-right">
-                    <div className="gasto-valor">R$ {g.valor.toFixed(2)}</div>
+                    <div className="gasto-valor">
+                      R$ {g.valor.toFixed(2)}
+                    </div>
 
-                    {/* BOTÃO EXCLUIR */}
                     <button
                       className="delete-btn"
                       onClick={() => excluirGasto(g.id)}
@@ -131,7 +159,6 @@ export default function Dashboard() {
                       ✖
                     </button>
                   </div>
-
                 </li>
               );
             })}
@@ -143,14 +170,14 @@ export default function Dashboard() {
       <div className="dashboard-buttons">
         <button
           className="btn-primary"
-          onClick={() => (window.location.href = "/registrar-gasto")}
+          onClick={() => navigate("/registrar-gasto")}
         >
           Registrar Gasto
         </button>
 
         <button
           className="btn-secondary"
-          onClick={() => (window.location.href = "/categorias")}
+          onClick={() => navigate("/categorias")}
         >
           Gerenciar Categorias
         </button>

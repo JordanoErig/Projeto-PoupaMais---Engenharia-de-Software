@@ -1,17 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom"; // <--- IMPORTANTE
+import { useNavigate } from "react-router-dom"; 
 import { subscribeUpdate } from "../utils/events";
 import BackButton from "../components/BackButton";
 import "../styles/Meta.css";
 
 export default function Meta() {
-  const navigate = useNavigate(); // <--- HOOK DE NAVEGAÇÃO
+  const navigate = useNavigate();
   const [metas, setMetas] = useState([]);
+  
+  // 🚨 NOVO: Obtém o email do usuário logado
+  const userEmail = localStorage.getItem("userEmailLogado"); 
 
   function loadMetas() {
-    const m = JSON.parse(localStorage.getItem("metas")) || [];
-    setMetas(m);
+    // 🚨 Ação de Segurança
+    if (!userEmail) {
+        navigate("/login"); // Redireciona se não houver sessão ativa
+        return;
+    }
+    
+    // 1. Pega a lista GLOBAL de metas
+    const allMetas = JSON.parse(localStorage.getItem("metas")) || [];
+    
+    // 2. 🚨 FILTRA: Apenas as metas onde o 'userEmail' corresponde ao usuário logado
+    const userMetas = allMetas.filter(meta => meta.userEmail === userEmail);
+    
+    setMetas(userMetas);
   }
 
   useEffect(() => {
@@ -20,16 +34,14 @@ export default function Meta() {
       loadMetas();
     });
     return unsub;
-  }, []);
+  }, [userEmail]); // Adicionando userEmail como dependência para carregar se a sessão mudar.
 
   function calcularStatus(meta) {
     const hoje = new Date();
-    // Ajusta a hora para comparar apenas a data, evitando falsos vencidos
     hoje.setHours(0, 0, 0, 0); 
     const limite = new Date(meta.dataLimite);
     limite.setHours(0, 0, 0, 0); 
-    // Correção: Converter string para número
-    const limiteEstrangeiro = new Date(limite.getTime() + 86400000); // Add 1 dia para compensar fuso se necessário
+    const limiteEstrangeiro = new Date(limite.getTime() + 86400000); 
 
     if (meta.valorAtual >= meta.valorObjetivo) return "Concluída";
     if (hoje > limiteEstrangeiro) return "Vencida";
@@ -37,22 +49,19 @@ export default function Meta() {
   }
 
   function progresso(meta) {
-    if(meta.valorObjetivo === 0) return 0; // Evita divisão por zero
+    if(meta.valorObjetivo === 0) return 0;
     return Math.min(
       100,
       Math.round((meta.valorAtual / meta.valorObjetivo) * 100)
     );
   }
 
-  // Navegação correta do React
   function navegarAdicionar() {
     navigate("/metas/adicionar");
   }
 
   return (
     <div className="metas-container">
-      {/* Se o seu BackButton já usa useNavigate internamente, está ok. 
-          Se não, considere usar navigate(-1) */}
       <BackButton to="/dashboard" />
 
       <motion.div
@@ -79,11 +88,11 @@ export default function Meta() {
             className="meta-card"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            onClick={() => navigate(`/metas/${meta.id}`)}
+            // Navega para a página de detalhes da meta
+            onClick={() => navigate(`/metas/${meta.id}`)} 
           >
             <div className="meta-top">
               <h3>{meta.nome}</h3>
-              {/* Adicionei uma classe lowercase para o CSS funcionar melhor */}
               <span className={`status ${calcularStatus(meta).toLowerCase().replace(" ", "-")}`}>
                 {calcularStatus(meta)}
               </span>
@@ -103,8 +112,7 @@ export default function Meta() {
                 style={{ width: `${progresso(meta)}%` }}
               ></div>
             </div>
-
-            {/* <p className="progress-text">{progresso(meta)}%</p> */}
+            
           </motion.div>
         ))}
       </div>

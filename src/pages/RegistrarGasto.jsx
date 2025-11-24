@@ -17,14 +17,26 @@ export default function RegistrarGasto() {
   const [descricao, setDescricao] = useState("");
   const [categories, setCategories] = useState([]);
 
+  // 🚨 CHAVE DE USUÁRIO: Obtém o email do usuário logado
+  const userEmail = localStorage.getItem("userEmailLogado"); 
+
   useEffect(() => {
+    // 🚨 SEGURANÇA: Verifica se o usuário está logado
+    if (!userEmail) {
+        navigate("/login");
+        return;
+    }
+
     const now = new Date();
     setData(now.toISOString().slice(0, 10));
 
-    const cats = JSON.parse(localStorage.getItem("categories")) || [];
-    setCategories(cats);
-    if (cats.length > 0) setCategoriaId(cats[0].id);
-  }, []);
+    // 🚨 FILTRAGEM DE CATEGORIAS POR USUÁRIO
+    const allCats = JSON.parse(localStorage.getItem("categories")) || [];
+    const userCats = allCats.filter(c => c.userEmail === userEmail); // Assume que categorias têm userEmail
+    
+    setCategories(userCats);
+    if (userCats.length > 0) setCategoriaId(userCats[0].id);
+  }, [userEmail, navigate]); // Adicionado userEmail e navigate como dependências
 
   const parseNumber = (v) => {
     if (!v) return 0;
@@ -33,6 +45,12 @@ export default function RegistrarGasto() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!userEmail) {
+      alert("Sessão expirada. Faça login novamente.");
+      navigate("/login");
+      return;
+    }
 
     const num = parseNumber(valor);
 
@@ -53,15 +71,21 @@ export default function RegistrarGasto() {
       categoriaId,
       descricao: descricao.trim(),
       createdAt: new Date().toISOString(),
+      userEmail: userEmail, // 👈 CHAVE CRÍTICA: Associa o gasto ao usuário
     };
 
+    // 1. Salva o Gasto (Lista Global)
     const gastos = JSON.parse(localStorage.getItem("gastos")) || [];
     gastos.unshift(gasto);
     localStorage.setItem("gastos", JSON.stringify(gastos));
 
-    const saldoAtual = parseFloat(localStorage.getItem("saldo") || "0");
+    // 2. 🚨 ATUALIZA SALDO DO USUÁRIO
+    // Lendo e salvando na chave ESPECÍFICA do usuário (`saldo_${userEmail}`)
+    const saldoKey = `saldo_${userEmail}`;
+    const saldoAtual = parseFloat(localStorage.getItem(saldoKey) || "0");
+    
     const novoSaldo = Number((saldoAtual - num).toFixed(2));
-    localStorage.setItem("saldo", String(novoSaldo));
+    localStorage.setItem(saldoKey, String(novoSaldo));
 
     sendUpdate();
 
@@ -85,6 +109,8 @@ export default function RegistrarGasto() {
             onChange={(e) => setValor(e.target.value)}
             placeholder="0.00"
             inputMode="decimal"
+            type="number" // Use type="number" para melhor experiência em mobile/navegadores
+            step="0.01"
           />
         </label>
 

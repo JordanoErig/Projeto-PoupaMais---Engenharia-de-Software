@@ -1,18 +1,28 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Hook de navegação
+import { useNavigate } from "react-router-dom";
 import { sendUpdate } from "../utils/events";
-import "../styles/AdicionarMeta.css"; // Seu arquivo CSS
+import "../styles/AdicionarMeta.css";
+import BackButton from "../components/BackButton";
 
 export default function AdicionarMeta() {
-  const navigate = useNavigate(); // Inicia o hook
-  
+  const navigate = useNavigate();
+  // 🚨 NOVO: Obtém o email do usuário logado
+  const userEmail = localStorage.getItem("userEmailLogado"); 
+
   const [nome, setNome] = useState("");
   const [valorObjetivo, setValorObjetivo] = useState("");
   const [dataLimite, setDataLimite] = useState("");
 
   function salvar(e) {
-    e.preventDefault(); // Impede recarregamento da página
+    e.preventDefault();
 
+    // 🚨 Validação: Redireciona se não estiver logado (segurança)
+    if (!userEmail) {
+      alert("Sessão expirada ou inválida. Faça login novamente.");
+      navigate("/login");
+      return;
+    }
+    
     // Validações básicas
     if (!nome.trim()) return alert("Nome é obrigatório");
     if (!valorObjetivo) return alert("Valor é obrigatório");
@@ -24,6 +34,7 @@ export default function AdicionarMeta() {
       valorObjetivo: parseFloat(valorObjetivo),
       valorAtual: 0,
       dataLimite,
+      userEmail: userEmail, // 👈 CHAVE CRÍTICA: Associa a meta ao usuário logado
     };
 
     // Salva no LocalStorage
@@ -33,17 +44,16 @@ export default function AdicionarMeta() {
 
     // Atualiza a lista e navega de volta
     sendUpdate();
-    navigate("/metas"); // <--- Navegação correta (sem window.location)
+    navigate("/metas");
   }
 
   return (
     <div className="addmeta-container">
+      {/* 🚨 BackButton não precisa de prop 'to' se o componente já a gerencia */}
+      <BackButton/>
       
       {/* Cabeçalho */}
       <div className="addmeta-header">
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          ←
-        </button>
         <h2 style={{ margin: 0, color: "#4ebfa2" }}>Nova Meta</h2>
       </div>
 
@@ -77,7 +87,6 @@ export default function AdicionarMeta() {
           required
         />
 
-        {/* Note que aqui usamos a SUA classe do CSS: btn-salvar */}
         <button type="submit" className="btn-salvar">
           Salvar Meta
         </button>

@@ -31,6 +31,7 @@
 
 .muted {
   color: #888;
+  align-items: column;
 }
 
 /* item */
@@ -82,6 +83,7 @@
 
 .modal-card h3 {
   margin-top: 0;
+  color: #4ebfa2
 }
 
 .modal-form {
@@ -119,7 +121,7 @@
   background-color: #4ebfa2;
   color: #fff;
   border: none;
-  padding: 6px;
+  padding: 8px 12px;
   border-radius: 10px;
   font-weight: 600;
   cursor: pointer;

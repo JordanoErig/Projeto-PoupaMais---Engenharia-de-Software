@@ -1,15 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
-// Importe o CSS que criamos acima
-import "../styles/TelaInicial.css"; 
+import { useNavigate } from "react-router-dom"; // 👈 Importa o hook useNavigate
+import "../styles/TelaInicial.css";
 import inicioImg from "../assets/imagens/porquinho.jpg";
 
-// Dica: Se você estiver usando react-router-dom, use o hook useNavigate
-// em vez de window.location.href para uma transição mais suave (SPA).
-// import { useNavigate } from "react-router-dom";
-
 export default function TelaInicial() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate(); // 👈 Inicializa o hook de navegação
 
   return (
     <div className="container">
@@ -42,16 +38,16 @@ export default function TelaInicial() {
       <div className="button-group">
         <button
           className="btn btn-primary"
-          onClick={() => (window.location.href = "/login")} 
-          /* Se usar Router: onClick={() => navigate("/login")} */
+          // 🚨 USO DO ROUTER: Substituído window.location.href por navigate("/login")
+          onClick={() => navigate("/login")}
         >
           Entrar
         </button>
 
         <button
           className="btn btn-outline"
-          onClick={() => (window.location.href = "/cadastro")}
-           /* Se usar Router: onClick={() => navigate("/cadastro")} */
+          // 🚨 USO DO ROUTER: Substituído window.location.href por navigate("/cadastro")
+          onClick={() => navigate("/cadastro")}
         >
           Criar Conta
         </button>

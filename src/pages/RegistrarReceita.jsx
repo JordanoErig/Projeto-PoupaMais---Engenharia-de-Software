@@ -1,127 +1,166 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { subscribeUpdate, emitUpdate } from "../utils/events";
+import { useNavigate } from "react-router-dom"; 
 import "../styles/RegistrarReceita.css";
 import BackButton from "../components/BackButton";
 
 export default function RegistrarReceita() {
-  const [valor, setValor] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [data, setData] = useState("");
-  const [receitas, setReceitas] = useState([]);
+    const navigate = useNavigate(); 
+    
+    const [valor, setValor] = useState("");
+    const [descricao, setDescricao] = useState("");
+    const [data, setData] = useState("");
+    const [receitas, setReceitas] = useState([]);
 
-  // Carrega receitas
-  function loadReceitas() {
-    const r = JSON.parse(localStorage.getItem("receitas")) || [];
-    setReceitas(r);
-  }
+    // 🚨 CHAVE DE USUÁRIO: Obtém o email do usuário logado
+    const userEmail = localStorage.getItem("userEmailLogado"); 
 
-  useEffect(() => {
-    loadReceitas();
+    // Função para carregar e filtrar receitas
+    function loadReceitas() {
+        // 🚨 SEGURANÇA: Verifica se o usuário está logado
+        if (!userEmail) {
+            navigate("/login");
+            return;
+        }
 
-    const unsub = subscribeUpdate(() => {
-      loadReceitas();
-    });
-
-    return unsub;
-  }, []);
-
-  function registrar() {
-    if (!valor || !descricao || !data) {
-      alert("Preencha todos os campos!");
-      return;
+        const allReceitas = JSON.parse(localStorage.getItem("receitas")) || [];
+        
+        // 🚨 FILTRA: Apenas receitas onde o 'userEmail' corresponde ao usuário logado
+        const userReceitas = allReceitas
+            .filter(r => r.userEmail === userEmail)
+            .sort((a, b) => new Date(b.data) - new Date(a.data)); // Opcional: Ordenar por data
+        
+        setReceitas(userReceitas);
     }
 
-    const nova = {
-      id: Date.now(),
-      valor: parseFloat(valor),
-      descricao,
-      data,
-    };
+    useEffect(() => {
+        loadReceitas();
 
-    // Salva a receita
-    const lista = [...receitas, nova];
-    localStorage.setItem("receitas", JSON.stringify(lista));
-    setReceitas(lista);
+        const unsub = subscribeUpdate(() => {
+            loadReceitas();
+        });
 
-    // ---- Atualiza saldo ----
-    const saldoAtual = parseFloat(localStorage.getItem("saldo") || "0");
-    const novoSaldo = saldoAtual + parseFloat(valor);
-    localStorage.setItem("saldo", novoSaldo);
+        return unsub;
+    }, [userEmail, navigate]); 
 
-    // Atualiza dashboard
-    emitUpdate();
-
-    // Limpa campos
-    setValor("");
-    setDescricao("");
-    setData("");
-  }
-
-  return (
-    <div className="receita-container">
-          {<BackButton/>}
-
-      <motion.div
-        className="receita-header"
+    function registrar() {
+        if (!userEmail) {
+            alert("Sessão expirada. Faça login novamente.");
+            navigate("/login");
+            return;
+        }
         
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <h2>Registrar Receita</h2>
-      </motion.div>
+        const valorNumero = parseFloat(valor.replace(",", "."));
+        
+        if (!valorNumero || !descricao || !data) {
+            alert("Preencha todos os campos e insira um valor válido!");
+            return;
+        }
 
-      <div className="form-area">
+        const nova = {
+            id: Date.now(),
+            valor: valorNumero,
+            descricao,
+            data,
+            userEmail: userEmail, // ✅ Associa a receita ao usuário
+        };
 
-        <label>Descrição</label>
-        <input
-          type="text"
-          value={descricao}
-          onChange={(e) => setDescricao(e.target.value)}
-        />
+        // 1. Salva a receita (Lista Global)
+        const allReceitas = JSON.parse(localStorage.getItem("receitas")) || [];
+        allReceitas.push(nova);
+        localStorage.setItem("receitas", JSON.stringify(allReceitas));
+        
+        // 2. 🚨 ATUALIZA SALDO DO USUÁRIO
+        // Lendo e salvando na chave ESPECÍFICA do usuário (`saldo_${userEmail}`)
+        const saldoKey = `saldo_${userEmail}`;
+        const saldoAtual = parseFloat(localStorage.getItem(saldoKey) || "0");
+        
+        const novoSaldo = Number((saldoAtual + valorNumero).toFixed(2));
+        localStorage.setItem(saldoKey, String(novoSaldo)); // ✅ Usa a chave correta
+        
+        // 3. Atualiza o estado local
+        setReceitas(prev => [nova, ...prev]);
+        
+        // 4. Atualiza dashboard
+        emitUpdate();
+        
+        alert("Receita registrada com sucesso!");
 
-        <label>Valor (R$)</label>
-        <input
-          type="number"
-          value={valor}
-          onChange={(e) => setValor(e.target.value)}
-        />
+        // Limpa campos
+        setValor("");
+        setDescricao("");
+        setData("");
+    }
 
-        <label>Data</label>
-        <input
-          type="date"
-          value={data}
-          onChange={(e) => setData(e.target.value)}
-        />
+    return (
+        <div className="receita-container">
+            <BackButton to="/dashboard" /> 
 
-        <button className="btn-registrar" onClick={registrar}>
-          Salvar Receita
-        </button>
-      </div>
+            <motion.div
+                className="receita-header"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+            >
+                <h2>Registrar Receita</h2>
+            </motion.div>
 
-      <div className="lista-receitas">
-        <h3>Receitas Registradas</h3>
+            <div className="form-area">
 
-        {receitas.length === 0 && (
-          <p className="muted">Nenhuma receita registrada.</p>
-        )}
+                <label>Descrição</label>
+                <input
+                    type="text"
+                    value={descricao}
+                    onChange={(e) => setDescricao(e.target.value)}
+                    required
+                />
 
-        <ul>
-          {receitas.map((r) => (
-            <li key={r.id} className="receita-item">
-              <div>
-                <p className="desc">{r.descricao}</p>
-                <p className="data">
-                  {new Date(r.data).toLocaleDateString()}
-                </p>
-              </div>
+                <label>Valor (R$)</label>
+                <input
+                    type="number"
+                    step="0.01"
+                    value={valor}
+                    onChange={(e) => setValor(e.target.value)}
+                    required
+                />
 
-              <p className="valor">R$ {r.valor.toFixed(2)}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
+                <label>Data</label>
+                <input
+                    type="date"
+                    value={data}
+                    onChange={(e) => setData(e.target.value)}
+                    required
+                />
 
-    </div>
-  );
+                <button className="btn-registrar" onClick={registrar}>
+                    Salvar Receita
+                </button>
+            </div>
+
+            <div className="lista-receitas">
+                <h3>Receitas Registradas</h3>
+
+                {receitas.length === 0 && (
+                    <p className="muted">Nenhuma receita registrada.</p>
+                )}
+
+                <ul>
+                    {/* Exibe apenas as receitas do usuário logado */}
+                    {receitas.map((r) => (
+                        <li key={r.id} className="receita-item">
+                            <div>
+                                <p className="desc">{r.descricao}</p>
+                                <p className="data">
+                                    {new Date(r.data).toLocaleDateString()}
+                                </p>
+                            </div>
+
+                            <p className="valor">R$ {r.valor.toFixed(2)}</p>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+        </div>
+    );
 }

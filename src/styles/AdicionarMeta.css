@@ -11,14 +11,7 @@
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
-}
-
-.back-btn {
-  background: none;
-  border: none;
-  font-size: 1.6rem;
-  cursor: pointer;
-  color: #4ebfa2;
+  margin-top: 60px; /* espaço para o backbutton */
 }
 
 .form-area {

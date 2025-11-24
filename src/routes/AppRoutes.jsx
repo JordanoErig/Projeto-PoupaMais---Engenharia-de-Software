@@ -11,6 +11,7 @@ import Meta from "../pages/Meta";
 import AdicionarMeta from "../pages/AdicionarMeta";
 import MetaDetalhes from "../pages/MetaDetalhes";
 import AdicionarProgresso from "../pages/AdicionarProgresso";
+import Logout from "../pages/Logout";
 
 
 
@@ -32,6 +33,7 @@ export default function AppRoutes() {
         <Route path="/metas/adicionar" element={<AdicionarMeta />} />
         <Route path="/metas/:id" element={<MetaDetalhes />} />
         <Route path="/metas/:id/progresso" element={<AdicionarProgresso />} />
+        <Route path="/logout" element={<Logout />} />
  
       </Routes>
     </BrowserRouter>

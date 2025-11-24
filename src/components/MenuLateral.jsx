@@ -1,7 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/MenuLateral.css";
 
 export default function MenuLateral({ open, onClose }) {
+
+  const navigate = useNavigate(); 
+
+  function goTo(path) {
+    onClose();
+    navigate(path); 
+  }
+
   return (
     <>
       {/* BACKDROP */}
@@ -18,34 +27,34 @@ export default function MenuLateral({ open, onClose }) {
 
           <button
             className="menu-item"
-            onClick={() => (window.location.href = "/registrar-receita")}
-          >
+            onClick={() => goTo("/registrar-receita")}>
             ➕ Registrar Receita
           </button>
 
           <button
             className="menu-item"
-            onClick={() => (window.location.href = "/categorias")}
-          >
+            onClick={() => goTo("/categorias")}>
             🗂️ Gerenciar Categorias
           </button>
 
           <button
             className="menu-item"
-            onClick={() => (window.location.href = "/metas")}
-          >
+            onClick={() => goTo("/metas")}>
             🎯 Criar Meta
           </button>
 
+          {/* 🚨 CORREÇÃO DO LOGOUT */}
           <button
             className="menu-item logout"
             onClick={() => {
-              localStorage.removeItem("usuarioLogado");
-              window.location.href = "/";
+              // Simplesmente navegamos para a rota /logout
+              // O componente Logout.jsx fará a limpeza da chave 'userEmailLogado'
+              goTo("/logout"); 
             }}
           >
             🚪 Logout
           </button>
+
         </div>
       </div>
     </>

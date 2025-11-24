@@ -11,11 +11,25 @@ export default function MetaDetalhes() {
   const navigate = useNavigate();
   const [meta, setMeta] = useState(null);
   const prevConcluida = useRef(false);
+  
+  // 🚨 NOVO: Obtém o email do usuário logado (chave de segurança)
+  const userEmail = localStorage.getItem("userEmailLogado"); 
 
   // carrega meta
   function loadMeta() {
+    // 🚨 Ação de Segurança
+    if (!userEmail) {
+        navigate("/login"); // Redireciona se não houver sessão ativa
+        return;
+    }
+    
     const metas = JSON.parse(localStorage.getItem("metas")) || [];
-    const encontrada = metas.find((m) => String(m.id) === String(id));
+    
+    // 🚨 FILTRO CRÍTICO: Encontra a meta que corresponde ao ID E ao usuário logado
+    const encontrada = metas.find(
+      (m) => String(m.id) === String(id) && m.userEmail === userEmail
+    );
+    
     setMeta(encontrada || null);
   }
 
@@ -24,7 +38,7 @@ export default function MetaDetalhes() {
     const unsub = subscribeUpdate(() => loadMeta());
     return unsub;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, userEmail]); // Adicionado userEmail para reagir se a sessão mudar
 
   // dispara confetti quando atingir 100% (apenas na transição para concluída)
   useEffect(() => {
@@ -48,7 +62,7 @@ export default function MetaDetalhes() {
     return (
       <div className="meta-detalhes-container">
         <BackButton to="/metas" />
-        <p className="muted">Meta não encontrada.</p>
+        <p className="muted">Meta não encontrada ou acesso negado.</p>
       </div>
     );
   }
@@ -110,6 +124,7 @@ export default function MetaDetalhes() {
       <div className="historico-section">
         <h3>Histórico de Adições</h3>
 
+        {/* Note que o histórico (h) não precisa de userEmail, pois ele já está dentro da meta filtrada */}
         {(!meta.historico || meta.historico.length === 0) ? (
           <p className="muted">Nenhum valor adicionado ainda.</p>
         ) : (

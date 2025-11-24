@@ -13,7 +13,7 @@
   align-items: center;
   gap: 12px;
   color:#4ebfa2;
-  justify-content: space-between;
+  margin-top: 60px; /* espaço para o backbutton */
 }
 
 .back-btn {
